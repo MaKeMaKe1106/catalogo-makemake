@@ -1,13 +1,15 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Make Make - Catálogo Online</title>
-    <!-- Tailwind CSS para el diseño visual -->
+    <!-- Importación de Tailwind CSS para el diseño visual responsivo -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* [ESTILOS]: Animación y configuración del carrusel infinito de marcas */
+        /* ------------------------------------------------------------- */
+        /* ESTILOS DEL CARRUSEL INFINITO                                 */
+        /* ------------------------------------------------------------- */
         @keyframes scroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
@@ -17,9 +19,11 @@
             width: max-content;
             animation: scroll 35s linear infinite;
         }
-        .animate-marquee:hover {
-            animation-play-state: paused;
+        /* Evita que la animación se detenga al interactuar en móviles */
+        .animate-marquee:active, .animate-marquee:focus {
+            animation-play-state: running !important;
         }
+        /* Clases auxiliares para ocultar barras de desplazamiento feas */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -31,12 +35,16 @@
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
-    <!-- [CABECERA] -->
+    <!-- ------------------------------------------------------------- -->
+    <!-- CABECERA: LOGO Y BARRA DE BÚSQUEDA                             -->
+    <!-- ------------------------------------------------------------- -->
     <header style="background: linear-gradient(135deg, #F5F2EB 0%, #E6E0D3 100%);" class="shadow-sm py-4 px-6 border-b border-gray-200">
         <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10">
+            <!-- Logo de la marca -->
             <div class="flex flex-col items-center justify-center flex-shrink-0">
                 <img src="https://lh3.googleusercontent.com/d/1YcfdcfiTwNAu45D-JX5plXMJ6oKOVOvy" alt="Make Make Logo" class="h-20 md:h-24 object-contain">
             </div>
+            <!-- Input para buscar productos por nombre, marca o descripción -->
             <div class="w-full max-w-md">
                 <div class="flex items-center bg-white rounded-full shadow-sm border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-pink-400 transition">
                     <span class="pl-4 pr-2 text-gray-400">
@@ -48,31 +56,41 @@
         </div>
     </header>
 
-    <!-- [CARRUSEL DE MARCAS] -->
+    <!-- ------------------------------------------------------------- -->
+    <!-- BARRA DE MARCAS (CARRUSEL)                                      -->
+    <!-- ------------------------------------------------------------- -->
     <nav class="bg-white border-b border-gray-200 shadow-sm overflow-hidden py-6 relative">
-        <div id="carrusel-marcas" class="animate-marquee flex items-center space-x-14 px-6">
-            <!-- Se carga de manera estática una sola vez para evitar que se detenga -->
+        <!-- Contenedor independiente para que el carrusel nunca se detenga al filtrar -->
+        <div id="carrusel-contenedor">
+            <!-- Las marcas se inyectan dinámicamente aquí vía JavaScript -->
         </div>
     </nav>
 
-    <!-- [CUERPO PRINCIPAL] -->
+    <!-- ------------------------------------------------------------- -->
+    <!-- CUERPO PRINCIPAL: GRILLA DE PRODUCTOS                           -->
+    <!-- ------------------------------------------------------------- -->
     <main class="max-w-6xl mx-auto p-4 md:p-6">
+        <!-- Aviso de filtro activo (aparece solo cuando filtras algo) -->
         <div id="filtro-activo-info" class="mb-6 flex justify-between items-center hidden">
             <p id="texto-filtro" class="text-sm font-semibold text-gray-600">Mostrando resultados.</p>
             <button onclick="reiniciarFiltros()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-xs font-bold transition">Ver todo el catálogo</button>
         </div>
 
+        <!-- Cuadrícula donde se listan las tarjetas de productos -->
         <div id="productos-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Indicador de carga inicial -->
             <div class="col-span-full text-center py-12 text-gray-400 font-medium">Cargando catálogo...</div>
         </div>
     </main>
 
-    <!-- [MODAL DE DETALLE] -->
+    <!-- ------------------------------------------------------------- -->
+    <!-- MODAL DE DETALLE DE PRODUCTO (VENTANA FLOTANTE)                 -->
+    <!-- ------------------------------------------------------------- -->
     <div id="modal" onclick="cerrarModalAfuera(event)" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50 overflow-y-auto">
         <div class="bg-white rounded-xl max-w-2xl w-full p-6 relative shadow-2xl max-h-[90vh] flex flex-col my-auto">
+            <!-- Botón de cerrar modal -->
             <button onclick="cerrarModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-700 font-bold text-2xl z-10 bg-white/80 px-2 rounded-full">&times;</button>
             
+            <!-- Contenido deslizable del modal -->
             <div class="overflow-y-auto pr-2 no-scrollbar">
                 <img id="modal-img" src="" alt="" class="w-full h-56 md:h-64 object-contain mb-4 rounded bg-gray-50 p-2">
                 <h2 id="modal-titulo" class="text-xl font-bold mb-2 text-gray-900"></h2>
@@ -81,26 +99,32 @@
                 <p id="modal-desc" class="text-sm text-gray-600 mb-4 leading-relaxed whitespace-pre-line"></p>
             </div>
 
+            <!-- Estado de disponibilidad (Disponible / Agotado) -->
             <div id="modal-estado" class="text-center font-bold py-2.5 rounded-lg text-sm tracking-wide mt-2 flex-shrink-0"></div>
         </div>
     </div>
 
-    <!-- [SCRIPTS DE JAVASCRIPT] -->
+    <!-- ------------------------------------------------------------- -->
+    <!-- LÓGICA DE JAVASCRIPT                                          -->
+    <!-- ------------------------------------------------------------- -->
     <script>
+        // Enlace oficial de tu Apps Script conectado a Google Sheets
         const API_URL = 'https://script.google.com/macros/s/AKfycbxEJESltpmcuA53ow2D3ZcnLGMceypGhPjJMneOtgjOtaGd4fc94LJJXMmAgo_qvtUStg/exec';
-        let todosLosProductos = [];
-        let marcaActual = 'TODAS';
-        let carruselRenderizado = false;
+        
+        let todosLosProductos = []; // Almacena todos los productos descargados
+        let marcaActual = 'TODAS';     // Filtro de marca actual seleccionado
+        let carruselCreado = false;    // Bandera para asegurar que el carrusel solo se renderice 1 vez
 
+        // Función principal para descargar los datos de la hoja de cálculo
         async function cargarDatos() {
             try {
                 let respuesta = await fetch(API_URL);
                 todosLosProductos = await respuesta.json();
                 
-                // Renderizamos el carrusel solo la primera vez para que nunca se interrumpa
-                if (!carruselRenderizado) {
-                    renderizarCarruselMarcas(todosLosProductos);
-                    carruselRenderizado = true;
+                // Construimos el carrusel de marcas solo al iniciar la web
+                if (!carruselCreado) {
+                    construirCarruselInfinito(todosLosProductos);
+                    carruselCreado = true;
                 }
                 
                 renderizarProductos(todosLosProductos);
@@ -110,6 +134,7 @@
             }
         }
 
+        // Activador del buscador de texto en tiempo real
         document.addEventListener("DOMContentLoaded", () => {
             const inputBusqueda = document.getElementById("input-busqueda");
             if (inputBusqueda) {
@@ -119,8 +144,9 @@
             }
         });
 
-        function renderizarCarruselMarcas(productos) {
-            const container = document.getElementById('carrusel-marcas');
+        // Función que arma el carrusel infinito de marcas con ajustes de tamaño para los logos
+        function construirCarruselInfinito(productos) {
+            const contenedorNav = document.getElementById('carrusel-contenedor');
             
             let marcasMap = {};
             productos.forEach(p => {
@@ -131,7 +157,7 @@
 
             let marcasArray = Object.keys(marcasMap);
 
-            let htmlContenido = `<div onclick="seleccionarMarca('TODAS')" class="cursor-pointer flex-shrink-0 px-5 py-2.5 bg-pink-50 hover:bg-pink-100 rounded-lg text-pink-900 font-bold text-xs uppercase tracking-wider transition">TODAS</div>`;
+            let htmlTodos = `<div onclick="seleccionarMarca('TODAS')" class="cursor-pointer flex-shrink-0 px-5 py-2.5 bg-pink-50 hover:bg-pink-100 rounded-lg text-pink-900 font-bold text-xs uppercase tracking-wider transition">TODAS</div>`;
 
             let itemsHTML = marcasArray.map(marca => {
                 let logoUrl = marcasMap[marca];
@@ -141,6 +167,7 @@
                 let espacioHorizontal = "px-6"; 
                 let escalaZoom = "transform: scale(1.4);"; 
 
+                // Ajustes personalizados de zoom según cada marca
                 if (marcaLower.includes('round lab') || marcaLower.includes('centellian')) {
                     escalaZoom = "transform: scale(2.2);"; 
                 } 
@@ -169,15 +196,22 @@
                 }
             }).join('');
 
-            container.innerHTML = htmlContenido + itemsHTML + itemsHTML;
+            // Duplicamos los elementos para lograr el efecto infinito continuo
+            contenedorNav.innerHTML = `
+                <div class="animate-marquee flex items-center space-x-14 px-6">
+                    ${htmlTodos}${itemsHTML}${itemsHTML}
+                </div>
+            `;
         }
 
+        // Selecciona una marca al hacer clic y limpia el buscador de texto
         function seleccionarMarca(marca) {
             marcaActual = marca;
             document.getElementById('input-busqueda').value = ''; 
             aplicarFiltros();
         }
 
+        // Filtra los productos combinando la marca seleccionada y el texto escrito
         function aplicarFiltros() {
             let textoBusqueda = document.getElementById('input-busqueda').value.toLowerCase().trim();
             let filtrados = todosLosProductos;
@@ -210,6 +244,7 @@
             }
         }
 
+        // Restablece los filtros para mostrar todo el catálogo original
         function reiniciarFiltros() {
             marcaActual = 'TODAS';
             document.getElementById('input-busqueda').value = '';
@@ -217,6 +252,7 @@
             document.getElementById('filtro-activo-info').classList.add('hidden');
         }
 
+        // Dibuja las tarjetas de productos en pantalla
         function renderizarProductos(productos) {
             const grid = document.getElementById('productos-grid');
             
@@ -246,6 +282,7 @@
             }).join('');
         }
 
+        // Abre la ventana flotante (modal) con la información del producto seleccionado
         function abrirModal(p) {
             document.getElementById('modal-img').src = p.imagen;
             document.getElementById('modal-titulo').innerText = p.nombre;
@@ -267,11 +304,13 @@
             document.getElementById('modal').classList.add('flex');
         }
 
+        // Cierra el modal
         function cerrarModal() {
             document.getElementById('modal').classList.remove('flex');
             document.getElementById('modal').classList.add('hidden');
         }
 
+        // Cierra el modal si el usuario hace clic fuera de la caja blanca
         function cerrarModalAfuera(event) {
             const modalDiv = document.getElementById('modal');
             if (event.target === modalDiv) {
@@ -279,6 +318,7 @@
             }
         }
 
+        // Inicializa la app cargando los datos al abrir la página
         cargarDatos();
     </script>
 </body>
