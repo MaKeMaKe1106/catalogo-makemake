@@ -178,7 +178,7 @@
             });
         });
 
-        // Construye el carrusel con escalas independientes y aisladas para cada marca
+        // Construye el carrusel con control absoluto e independiente del tamaño mediante scale()
         function construirCarruselConLogos(productos) {
             const contenedorNav = document.getElementById('carrusel-contenedor');
             
@@ -200,48 +200,49 @@
                 let logoUrl = marcasMap[marcaOriginal];
                 let marcaLower = marcaOriginal.toLowerCase();
 
-                let espacioHorizontal = "px-6"; 
+                let espacioHorizontal = "px-8"; // Espacio lateral entre logos para que no se choquen al crecer
                 
                 // ESCALA PREDETERMINADA PARA CUALQUIER OTRA MARCA
-                let escalaZoom = "transform: scale(1.4);"; 
+                let escalaZoom = "transform: scale(1.3);"; 
 
-                // CONTROLES INDEPENDIENTES AISLADOS (Modifica cada scale a tu gusto)
+                // CONTROLES INDEPENDIENTES AISLADOS: Cambia libremente el número de scale() para cada marca
                 if (marcaLower.indexOf('dr. althea') !== -1 || marcaLower.indexOf('dr althea') !== -1) {
-                    escalaZoom = "transform: scale(1.6);"; // Ajusta aquí Dr. Althea
+                    escalaZoom = "transform: scale(1.6);"; // Cambia este número para Dr. Althea
                 }
                 else if (marcaLower.indexOf('skin1004') !== -1) {
-                    escalaZoom = "transform: scale(2.2);"; // Ajusta aquí Skin1004
+                    escalaZoom = "transform: scale(2.2);"; // Cambia este número para Skin1004
                 }
                 else if (marcaLower.indexOf('anua') !== -1) {
-                    escalaZoom = "transform: scale(1.3);"; // Ajusta aquí Anua
+                    escalaZoom = "transform: scale(1.3);"; // Cambia este número para Anua
                 }
                 else if (marcaLower.indexOf('jumiso') !== -1) {
-                    escalaZoom = "transform: scale(1.4);"; // Ajusta aquí Jumiso
+                    escalaZoom = "transform: scale(1.4);"; // Cambia este número para Jumiso
                 }
                 else if (marcaLower.indexOf('k-secret') !== -1 || marcaLower.indexOf('k secret') !== -1) {
-                    escalaZoom = "transform: scale(1.4);"; // Ajusta aquí K-Secret
+                    escalaZoom = "transform: scale(1.4);"; // Cambia este número para K-Secret
                 }
                 else if (marcaLower.indexOf('medicube') !== -1) {
-                    escalaZoom = "transform: scale(1.6);"; // Ajusta aquí Medicube
+                    escalaZoom = "transform: scale(1.6);"; // Cambia este número para Medicube
                 }
                 else if (marcaLower.indexOf('mixsoon') !== -1) {
-                    escalaZoom = "transform: scale(1.6);"; // Ajusta aquí Mixsoon
+                    escalaZoom = "transform: scale(1.7);"; // Cambia este número para Mixsoon
                 }
                 else if (marcaLower.indexOf('numbuzin') !== -1) {
-                    escalaZoom = "transform: scale(1.4);"; // Ajusta aquí Numbuzin
+                    escalaZoom = "transform: scale(1.4);"; // Cambia este número para Numbuzin
                 }
                 else if (marcaLower.indexOf('purito') !== -1) {
-                    escalaZoom = "transform: scale(1.4);"; // Ajusta aquí Purito
+                    escalaZoom = "transform: scale(1.4);"; // Cambia este número para Purito
                 }
                 else if (marcaLower.indexOf('round lab') !== -1) {
-                    escalaZoom = "transform: scale(2.4);"; // Ajusta aquí Round Lab
+                    escalaZoom = "transform: scale(2.4);"; // Cambia este número para Round Lab
                 }
 
                 if (!logoUrl) {
                     return `<div class="marca-item cursor-pointer flex-shrink-0 text-gray-700 font-bold text-sm tracking-wider uppercase hover:text-pink-600 transition" data-marca="${marcaOriginal}">${marcaOriginal}</div>`;
                 } else {
-                    return `<div class="marca-item cursor-pointer flex-shrink-0 h-16 flex items-center justify-center ${espacioHorizontal} transition transform hover:scale-105" data-marca="${marcaOriginal}">
-                                <img src="${logoUrl}" alt="${marcaOriginal}" style="${escalaZoom}" class="h-14 md:h-16 max-w-[220px] object-contain transition duration-300 pointer-events-none" loading="lazy">
+                    // Quitamos las restricciones de altura y dejamos que style="${escalaZoom}" mande por completo
+                    return `<div class="marca-item cursor-pointer flex-shrink-0 h-20 flex items-center justify-center ${espacioHorizontal} transition transform hover:scale-105" data-marca="${marcaOriginal}">
+                                <img src="${logoUrl}" alt="${marcaOriginal}" style="${escalaZoom}" class="max-h-12 max-w-[180px] object-contain transition duration-300 pointer-events-none" loading="lazy">
                             </div>`;
                 }
             }).join('');
