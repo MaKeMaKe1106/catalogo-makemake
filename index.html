@@ -57,11 +57,11 @@
     </header>
 
     <!-- ------------------------------------------------------------- -->
-    <!-- BARRA DE MARCAS (CARRUSEL DINÁMICO SEGURO)                    -->
+    <!-- BARRA DE MARCAS (CARRUSEL DINÁMICO CON LOGOS)                 -->
     <!-- ------------------------------------------------------------- -->
     <nav class="bg-white border-b border-gray-200 shadow-sm overflow-hidden py-6 relative">
         <div id="carrusel-contenedor">
-            <!-- El carrusel con logos reales se inyecta de forma segura aquí al cargar los datos -->
+            <!-- El carrusel con logos reales se inyecta aquí al cargar los datos -->
         </div>
     </nav>
 
@@ -166,7 +166,7 @@
             }
         });
 
-        // Función que extrae marcas y logos de Google Sheets y arma el carrusel infinito
+        // Función que extrae marcas y logos de Google Sheets y arma el carrusel infinito con imágenes
         function construirCarruselConLogos(productos) {
             const contenedorNav = document.getElementById('carrusel-contenedor');
             
