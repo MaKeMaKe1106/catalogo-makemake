@@ -134,6 +134,7 @@
         const API_URL = 'https://script.google.com/macros/s/AKfycbxEJESltpmcuA53ow2D3ZcnLGMceypGhPjJMneOtgjOtaGd4fc94LJJXMmAgo_qvtUStg/exec';
         
         let todosLosProductos = []; 
+        let productosFiltradosActuales = []; // Almacena la lista visible actual para evitar errores
         let marcaActual = 'TODAS';     
         let carruselCreado = false;    
 
@@ -142,6 +143,7 @@
             try {
                 let respuesta = await fetch(API_URL);
                 todosLosProductos = await respuesta.json();
+                productosFiltradosActuales = todosLosProductos;
                 
                 if (!carruselCreado) {
                     construirCarruselConLogos(todosLosProductos);
@@ -211,11 +213,12 @@
                     escalaZoom = "transform: scale(1.2);"; 
                 }
 
-                // Pasamos la marca exacta codificada de forma segura al evento onclick
+                // Pasamos la marca limpia evitando errores de comillas
+                let marcaEscapada = marcaOriginal.replace(/'/g, "\\'");
                 if (!logoUrl) {
-                    return `<div onclick="seleccionarMarca('${marcaOriginal}')" class="cursor-pointer flex-shrink-0 text-gray-700 font-bold text-sm tracking-wider uppercase hover:text-pink-600 transition">${marcaOriginal}</div>`;
+                    return `<div onclick="seleccionarMarca('${marcaEscapada}')" class="cursor-pointer flex-shrink-0 text-gray-700 font-bold text-sm tracking-wider uppercase hover:text-pink-600 transition">${marcaOriginal}</div>`;
                 } else {
-                    return `<div onclick="seleccionarMarca('${marcaOriginal}')" class="cursor-pointer flex-shrink-0 ${alturaContenedor} flex items-center justify-center ${espacioHorizontal} transition transform hover:scale-105">
+                    return `<div onclick="seleccionarMarca('${marcaEscapada}')" class="cursor-pointer flex-shrink-0 ${alturaContenedor} flex items-center justify-center ${espacioHorizontal} transition transform hover:scale-105">
                                 <img src="${logoUrl}" alt="${marcaOriginal}" style="${escalaZoom}" class="h-16 md:h-20 max-w-[220px] object-contain transition duration-300" loading="lazy">
                             </div>`;
                 }
@@ -257,6 +260,7 @@
                 });
             }
 
+            productosFiltradosActuales = filtrados;
             renderizarProductos(filtrados);
 
             const infoFiltro = document.getElementById('filtro-activo-info');
@@ -273,11 +277,12 @@
         function reiniciarFiltros() {
             marcaActual = 'TODAS';
             document.getElementById('input-busqueda').value = '';
+            productosFiltradosActuales = todosLosProductos;
             renderizarProductos(todosLosProductos);
             document.getElementById('filtro-activo-info').classList.add('hidden');
         }
 
-        // Renderiza las tarjetas de productos
+        // Renderiza las tarjetas de productos de forma segura usando índices numéricos
         function renderizarProductos(productos) {
             const grid = document.getElementById('productos-grid');
             
@@ -286,7 +291,8 @@
                 return;
             }
 
-            grid.innerHTML = productos.map(p => {
+            // Usamos el índice (index) para evitar que caracteres especiales o comillas rompan el HTML en móviles
+            grid.innerHTML = productos.map((p, index) => {
                 let esAgotado = p.estado && p.estado.toLowerCase() === 'agotado';
                 return `
                     <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col justify-between relative hover:shadow-md transition">
@@ -298,7 +304,7 @@
                             <span class="text-[10px] uppercase font-bold mb-1" style="color: #4a88e5;">${p.marca}</span>
                             <h3 class="font-semibold text-sm mb-2 text-gray-800 line-clamp-2">${p.nombre}</h3>
                             <p class="text-base font-bold text-gray-900 mt-auto mb-3">S/. ${p.precio}</p>
-                            <button onclick='abrirModal(${JSON.stringify(p)})' class="w-full py-2 bg-pink-50 text-pink-900 rounded-lg text-xs font-bold hover:bg-pink-600 hover:text-white transition">
+                            <button onclick="abrirModalPorIndex(${index})" class="w-full py-2 bg-pink-50 text-pink-900 rounded-lg text-xs font-bold hover:bg-pink-600 hover:text-white transition">
                                 Ver detalle
                             </button>
                         </div>
@@ -307,8 +313,11 @@
             }).join('');
         }
 
-        // Abre el modal de detalles
-        function abrirModal(p) {
+        // Abre el modal de detalles de manera 100% segura mediante el índice de la lista actual
+        function abrirModalPorIndex(index) {
+            let p = productosFiltradosActuales[index];
+            if (!p) return;
+
             document.getElementById('modal-img').src = p.imagen;
             document.getElementById('modal-titulo').innerText = p.nombre;
             document.getElementById('modal-marca').innerText = p.marca;
