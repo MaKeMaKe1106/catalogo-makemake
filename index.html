@@ -40,7 +40,7 @@
     <!-- ------------------------------------------------------------- -->
     <header style="background: linear-gradient(135deg, #F5F2EB 0%, #E6E0D3 100%);" class="shadow-sm py-4 px-6 border-b border-gray-200">
         <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10">
-            <!-- Logo de la marca -->
+            <!-- Logo principal de la tienda -->
             <div class="flex flex-col items-center justify-center flex-shrink-0">
                 <img src="https://lh3.googleusercontent.com/d/1YcfdcfiTwNAu45D-JX5plXMJ6oKOVOvy" alt="Make Make Logo" class="h-20 md:h-24 object-contain">
             </div>
@@ -57,71 +57,11 @@
     </header>
 
     <!-- ------------------------------------------------------------- -->
-    <!-- BARRA DE MARCAS (CARRUSEL FIJO E INDESTRUCTIBLE)              -->
+    <!-- BARRA DE MARCAS (CARRUSEL DINÁMICO SEGURO)                    -->
     <!-- ------------------------------------------------------------- -->
     <nav class="bg-white border-b border-gray-200 shadow-sm overflow-hidden py-6 relative">
-        <div class="animate-marquee flex items-center space-x-14 px-6">
-            <!-- Botón para ver todo -->
-            <div onclick="seleccionarMarca('TODAS')" class="cursor-pointer flex-shrink-0 px-5 py-2.5 bg-pink-50 hover:bg-pink-100 rounded-lg text-pink-900 font-bold text-xs uppercase tracking-wider transition">TODAS</div>
-            
-            <!-- Marcas fijas individuales (Evita que el carrusel se rompa o quede en blanco) -->
-            <div onclick="seleccionarMarca('ANUA')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">ANUA</span>
-            </div>
-            <div onclick="seleccionarMarca('JUMISO')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">JUMISO</span>
-            </div>
-            <div onclick="seleccionarMarca('K-SECRET')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">K-SECRET</span>
-            </div>
-            <div onclick="seleccionarMarca('MEDICUBE')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">MEDICUBE</span>
-            </div>
-            <div onclick="seleccionarMarca('MIXSOON')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">MIXSOON</span>
-            </div>
-            <div onclick="seleccionarMarca('NUMBUZIN')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">NUMBUZIN</span>
-            </div>
-            <div onclick="seleccionarMarca('PURITO')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">PURITO</span>
-            </div>
-            <div onclick="seleccionarMarca('ROUND LAB')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">ROUND LAB</span>
-            </div>
-            <div onclick="seleccionarMarca('SKIN1004')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">SKIN1004</span>
-            </div>
-
-            <!-- BLOQUE DUPLICADO EXACTO PARA MANTENER EL BUCLE INFINITO FLUIDO -->
-            <div onclick="seleccionarMarca('TODAS')" class="cursor-pointer flex-shrink-0 px-5 py-2.5 bg-pink-50 hover:bg-pink-100 rounded-lg text-pink-900 font-bold text-xs uppercase tracking-wider transition">TODAS</div>
-            <div onclick="seleccionarMarca('ANUA')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">ANUA</span>
-            </div>
-            <div onclick="seleccionarMarca('JUMISO')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">JUMISO</span>
-            </div>
-            <div onclick="seleccionarMarca('K-SECRET')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">K-SECRET</span>
-            </div>
-            <div onclick="seleccionarMarca('MEDICUBE')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">MEDICUBE</span>
-            </div>
-            <div onclick="seleccionarMarca('MIXSOON')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">MIXSOON</span>
-            </div>
-            <div onclick="seleccionarMarca('NUMBUZIN')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">NUMBUZIN</span>
-            </div>
-            <div onclick="seleccionarMarca('PURITO')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">PURITO</span>
-            </div>
-            <div onclick="seleccionarMarca('ROUND LAB')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">ROUND LAB</span>
-            </div>
-            <div onclick="seleccionarMarca('SKIN1004')" class="cursor-pointer flex-shrink-0 h-16 flex items-center justify-center px-6 transition transform hover:scale-105">
-                <span class="font-bold text-gray-800 text-lg uppercase tracking-wider">SKIN1004</span>
-            </div>
+        <div id="carrusel-contenedor">
+            <!-- El carrusel con logos reales se inyecta de forma segura aquí al cargar los datos -->
         </div>
     </nav>
 
@@ -195,12 +135,20 @@
         
         let todosLosProductos = []; // Almacena todos los productos descargados
         let marcaActual = 'TODAS';     // Filtro de marca actual seleccionado
+        let carruselCreado = false;    // Bandera para asegurar que el carrusel se dibuje solo 1 vez
 
         // Función principal para descargar los datos de la hoja de cálculo
         async function cargarDatos() {
             try {
                 let respuesta = await fetch(API_URL);
                 todosLosProductos = await respuesta.json();
+                
+                // Construimos el carrusel con logos reales una sola vez al cargar
+                if (!carruselCreado) {
+                    construirCarruselConLogos(todosLosProductos);
+                    carruselCreado = true;
+                }
+                
                 renderizarProductos(todosLosProductos);
             } catch (error) {
                 console.error("Error al cargar los datos:", error);
@@ -217,6 +165,66 @@
                 });
             }
         });
+
+        // Función que extrae marcas y logos de Google Sheets y arma el carrusel infinito
+        function construirCarruselConLogos(productos) {
+            const contenedorNav = document.getElementById('carrusel-contenedor');
+            
+            let marcasMap = {};
+            productos.forEach(p => {
+                if (p.marca && !marcasMap[p.marca]) {
+                    marcasMap[p.marca] = p.logo_marca || '';
+                }
+            });
+
+            let marcasArray = Object.keys(marcasMap);
+
+            let htmlTodos = `<div onclick="seleccionarMarca('TODAS')" class="cursor-pointer flex-shrink-0 px-5 py-2.5 bg-pink-50 hover:bg-pink-100 rounded-lg text-pink-900 font-bold text-xs uppercase tracking-wider transition">TODAS</div>`;
+
+            let itemsHTML = marcasArray.map(marca => {
+                let logoUrl = marcasMap[marca];
+                let marcaLower = marca.toLowerCase();
+
+                let alturaContenedor = "h-16"; 
+                let espacioHorizontal = "px-6"; 
+                let escalaZoom = "transform: scale(1.4);"; 
+
+                // Ajustes personalizados de zoom según cada marca
+                if (marcaLower.includes('round lab') || marcaLower.includes('centellian')) {
+                    escalaZoom = "transform: scale(2.2);"; 
+                } 
+                else if (marcaLower.includes('skin1004')) {
+                    escalaZoom = "transform: scale(2.4);"; 
+                }
+                else if (marcaLower.includes('dr. althea')) {
+                    escalaZoom = "transform: scale(5.0);";
+                } 
+                else if (marcaLower.includes('medicube') || marcaLower.includes('mixsoon')) {
+                    escalaZoom = "transform: scale(1.6);"; 
+                }
+                else if (marcaLower.includes('job') || marcaLower.includes('k-secret')) {
+                    escalaZoom = "transform: scale(0.8);"; 
+                }
+                else if (marcaLower.includes('anua') || marcaLower.includes('arencia') || marcaLower.includes('beauty creations')) {
+                    escalaZoom = "transform: scale(1.2);"; 
+                }
+
+                if (!logoUrl) {
+                    return `<div onclick="seleccionarMarca('${marca}')" class="cursor-pointer flex-shrink-0 text-gray-700 font-bold text-sm tracking-wider uppercase hover:text-pink-600 transition">${marca}</div>`;
+                } else {
+                    return `<div onclick="seleccionarMarca('${marca}')" class="cursor-pointer flex-shrink-0 ${alturaContenedor} flex items-center justify-center ${espacioHorizontal} transition transform hover:scale-105">
+                                <img src="${logoUrl}" alt="${marca}" style="${escalaZoom}" class="h-16 md:h-20 max-w-[220px] object-contain transition duration-300" loading="lazy">
+                            </div>`;
+                }
+            }).join('');
+
+            // Duplicamos los elementos exactamente para mantener el efecto de bucle infinito fluido
+            contenedorNav.innerHTML = `
+                <div class="animate-marquee flex items-center space-x-14 px-6">
+                    ${htmlTodos}${itemsHTML}${itemsHTML}
+                </div>
+            `;
+        }
 
         // Selecciona una marca al hacer clic y limpia el buscador de texto
         function seleccionarMarca(marca) {
