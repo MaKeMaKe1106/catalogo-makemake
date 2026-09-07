@@ -178,7 +178,7 @@
             });
         });
 
-        // Construye el carrusel con tamaños de logos individuales y seguros
+        // Construye el carrusel con escalas independientes para cada marca
         function construirCarruselConLogos(productos) {
             const contenedorNav = document.getElementById('carrusel-contenedor');
             
@@ -202,22 +202,46 @@
 
                 let espacioHorizontal = "px-6"; 
                 
-                // Altura estándar por defecto para la gran mayoría de los logos
-                let alturaLogo = "h-12 md:h-16"; 
+                // ESCALA PREDETERMINADA PARA CUALQUIER MARCA NUEVA
+                let escalaZoom = "transform: scale(1.4);"; 
 
-                // Ajuste independiente exclusivo para Dr. Althea (evita que se vea gigantesco)
+                // CONTROLES INDEPENDIENTES: Modifica el número de scale() de cada marca a tu gusto
                 if (marcaLower.includes('dr. althea') || marcaLower.includes('dr althea')) {
-                    alturaLogo = "h-12 md:h-12"; 
+                    escalaZoom = "transform: scale(1.4);"; // Ajusta aquí Dr. Althea
                 } 
                 else if (marcaLower.includes('skin1004')) {
-                    alturaLogo = "h-10 md:h-14"; 
+                    escalaZoom = "transform: scale(1.8);"; // Ajusta aquí Skin1004
+                }
+                else if (marcaLower.includes('anua')) {
+                    escalaZoom = "transform: scale(1.3);"; // Ajusta aquí Anua
+                }
+                else if (marcaLower.includes('jumiso')) {
+                    escalaZoom = "transform: scale(1.4);"; // Ajusta aquí Jumiso
+                }
+                else if (marcaLower.includes('k-secret') || marcaLower.includes('k secret')) {
+                    escalaZoom = "transform: scale(1.4);"; // Ajusta aquí K-Secret
+                }
+                else if (marcaLower.includes('medicube')) {
+                    escalaZoom = "transform: scale(1.5);"; // Ajusta aquí Medicube
+                }
+                else if (marcaLower.includes('mixsoon')) {
+                    escalaZoom = "transform: scale(1.4);"; // Ajusta aquí Mixsoon
+                }
+                else if (marcaLower.includes('numbuzin')) {
+                    escalaZoom = "transform: scale(1.4);"; // Ajusta aquí Numbuzin
+                }
+                else if (marcaLower.includes('purito')) {
+                    escalaZoom = "transform: scale(1.4);"; // Ajusta aquí Purito
+                }
+                else if (marcaLower.includes('round lab')) {
+                    escalaZoom = "transform: scale(1.8);"; // Ajusta aquí Round Lab
                 }
 
                 if (!logoUrl) {
                     return `<div class="marca-item cursor-pointer flex-shrink-0 text-gray-700 font-bold text-sm tracking-wider uppercase hover:text-pink-600 transition" data-marca="${marcaOriginal}">${marcaOriginal}</div>`;
                 } else {
                     return `<div class="marca-item cursor-pointer flex-shrink-0 h-16 flex items-center justify-center ${espacioHorizontal} transition transform hover:scale-105" data-marca="${marcaOriginal}">
-                                <img src="${logoUrl}" alt="${marcaOriginal}" class="${alturaLogo} max-w-[200px] object-contain transition duration-300 pointer-events-none" loading="lazy">
+                                <img src="${logoUrl}" alt="${marcaOriginal}" style="${escalaZoom}" class="h-14 md:h-16 max-w-[220px] object-contain transition duration-300 pointer-events-none" loading="lazy">
                             </div>`;
                 }
             }).join('');
