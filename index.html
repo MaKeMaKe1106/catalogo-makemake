@@ -57,7 +57,7 @@
     </header>
 
     <!-- ------------------------------------------------------------- -->
-    <!-- BARRA DE MARCAS (CARRUSEL PROTEGIDO CONTRA SÍMBOLOS)          -->
+    <!-- BARRA DE MARCAS (CARRUSEL DINÁMICO CON LOGOS SEGUROS)         -->
     <!-- ------------------------------------------------------------- -->
     <nav class="bg-white border-b border-gray-200 shadow-sm overflow-hidden py-6 relative">
         <div id="carrusel-contenedor">
@@ -178,7 +178,7 @@
             });
         });
 
-        // Construye el carrusel con tamaños de logos equilibrados y seguros
+        // Construye el carrusel con tamaños de logos individuales y seguros
         function construirCarruselConLogos(productos) {
             const contenedorNav = document.getElementById('carrusel-contenedor');
             
@@ -200,22 +200,24 @@
                 let logoUrl = marcasMap[marcaOriginal];
                 let marcaLower = marcaOriginal.toLowerCase();
 
-                // Tamaños equilibrados y controlados para evitar que ningún logo se desborde
-                let alturaLogo = "h-10 md:h-12"; 
                 let espacioHorizontal = "px-6"; 
+                
+                // Altura estándar por defecto para la gran mayoría de los logos
+                let alturaLogo = "h-12 md:h-16"; 
 
+                // Ajuste independiente exclusivo para Dr. Althea (evita que se vea gigantesco)
                 if (marcaLower.includes('dr. althea') || marcaLower.includes('dr althea')) {
-                    alturaLogo = "h-6 md:h-6"; 
+                    alturaLogo = "h-7 md:h-7"; 
                 } 
                 else if (marcaLower.includes('skin1004')) {
-                    alturaLogo = "h-10 md:h-12"; 
+                    alturaLogo = "h-10 md:h-14"; 
                 }
 
                 if (!logoUrl) {
                     return `<div class="marca-item cursor-pointer flex-shrink-0 text-gray-700 font-bold text-sm tracking-wider uppercase hover:text-pink-600 transition" data-marca="${marcaOriginal}">${marcaOriginal}</div>`;
                 } else {
                     return `<div class="marca-item cursor-pointer flex-shrink-0 h-16 flex items-center justify-center ${espacioHorizontal} transition transform hover:scale-105" data-marca="${marcaOriginal}">
-                                <img src="${logoUrl}" alt="${marcaOriginal}" class="${alturaLogo} max-w-[150px] object-contain transition duration-300 pointer-events-none" loading="lazy">
+                                <img src="${logoUrl}" alt="${marcaOriginal}" class="${alturaLogo} max-w-[200px] object-contain transition duration-300 pointer-events-none" loading="lazy">
                             </div>`;
                 }
             }).join('');
