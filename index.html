@@ -57,11 +57,11 @@
     </header>
 
     <!-- ------------------------------------------------------------- -->
-    <!-- BARRA DE MARCAS (CARRUSEL DINÁMICO SEGURO)                    -->
+    <!-- BARRA DE MARCAS (CARRUSEL PROTEGIDO CONTRA SÍMBOLOS)          -->
     <!-- ------------------------------------------------------------- -->
     <nav class="bg-white border-b border-gray-200 shadow-sm overflow-hidden py-6 relative">
         <div id="carrusel-contenedor">
-            <!-- El carrusel se inyecta de forma segura aquí al cargar los datos -->
+            <!-- El carrusel seguro se inyecta de forma dinámica aquí -->
         </div>
     </nav>
 
@@ -134,7 +134,7 @@
         const API_URL = 'https://script.google.com/macros/s/AKfycbxEJESltpmcuA53ow2D3ZcnLGMceypGhPjJMneOtgjOtaGd4fc94LJJXMmAgo_qvtUStg/exec';
         
         let todosLosProductos = []; 
-        let productosFiltradosActuales = []; // Almacena la lista visible actual para evitar errores
+        let productosFiltradosActuales = []; 
         let marcaActual = 'TODAS';     
         let carruselCreado = false;    
 
@@ -165,9 +165,20 @@
                     aplicarFiltros();
                 });
             }
+
+            // Escucha global de clics para los elementos del carrusel de marcas (Blindado contra símbolos como '&')
+            document.addEventListener("click", (e) => {
+                const itemMarca = e.target.closest(".marca-item");
+                if (itemMarca) {
+                    let marcaSeleccionada = itemMarca.getAttribute("data-marca");
+                    if (marcaSeleccionada) {
+                        seleccionarMarca(marcaSeleccionada);
+                    }
+                }
+            });
         });
 
-        // Construye el carrusel asegurando nombres limpios y un mapeo de marcas confiable
+        // Construye el carrusel usando atributos de datos para proteger el sistema contra caracteres especiales
         function construirCarruselConLogos(productos) {
             const contenedorNav = document.getElementById('carrusel-contenedor');
             
@@ -181,10 +192,10 @@
                 }
             });
 
-            // Ordenamos alfabéticamente para mantener siempre la misma posición en celulares
             let marcasArray = Object.keys(marcasMap).sort();
 
-            let htmlTodos = `<div onclick="seleccionarMarca('TODAS')" class="cursor-pointer flex-shrink-0 px-5 py-2.5 bg-pink-50 hover:bg-pink-100 rounded-lg text-pink-900 font-bold text-xs uppercase tracking-wider transition">TODAS</div>`;
+            // Botón TODAS seguro
+            let htmlTodos = `<div class="marca-item cursor-pointer flex-shrink-0 px-5 py-2.5 bg-pink-50 hover:bg-pink-100 rounded-lg text-pink-900 font-bold text-xs uppercase tracking-wider transition" data-marca="TODAS">TODAS</div>`;
 
             let itemsHTML = marcasArray.map(marcaOriginal => {
                 let logoUrl = marcasMap[marcaOriginal];
@@ -200,7 +211,7 @@
                 else if (marcaLower.includes('skin1004')) {
                     escalaZoom = "transform: scale(2.4);"; 
                 }
-                else if (marcaLower.includes('dr. althea')) {
+                else if (marcaLower.includes('dr. althea') || marcaLower.includes('dr althea')) {
                     escalaZoom = "transform: scale(5.0);";
                 } 
                 else if (marcaLower.includes('medicube') || marcaLower.includes('mixsoon')) {
@@ -213,18 +224,17 @@
                     escalaZoom = "transform: scale(1.2);"; 
                 }
 
-                // Pasamos la marca limpia evitando errores de comillas
-                let marcaEscapada = marcaOriginal.replace(/'/g, "\\'");
+                // Usamos data-marca para pasar marcas complejas con símbolos (&, ., etc.) de forma 100% segura
                 if (!logoUrl) {
-                    return `<div onclick="seleccionarMarca('${marcaEscapada}')" class="cursor-pointer flex-shrink-0 text-gray-700 font-bold text-sm tracking-wider uppercase hover:text-pink-600 transition">${marcaOriginal}</div>`;
+                    return `<div class="marca-item cursor-pointer flex-shrink-0 text-gray-700 font-bold text-sm tracking-wider uppercase hover:text-pink-600 transition" data-marca="${marcaOriginal}">${marcaOriginal}</div>`;
                 } else {
-                    return `<div onclick="seleccionarMarca('${marcaEscapada}')" class="cursor-pointer flex-shrink-0 ${alturaContenedor} flex items-center justify-center ${espacioHorizontal} transition transform hover:scale-105">
-                                <img src="${logoUrl}" alt="${marcaOriginal}" style="${escalaZoom}" class="h-16 md:h-20 max-w-[220px] object-contain transition duration-300" loading="lazy">
+                    return `<div class="marca-item cursor-pointer flex-shrink-0 ${alturaContenedor} flex items-center justify-center ${espacioHorizontal} transition transform hover:scale-105" data-marca="${marcaOriginal}">
+                                <img src="${logoUrl}" alt="${marcaOriginal}" style="${escalaZoom}" class="h-16 md:h-20 max-w-[220px] object-contain transition duration-300 pointer-events-none" loading="lazy">
                             </div>`;
                 }
             }).join('');
 
-            // Duplicamos el contenido para garantizar el scroll infinito continuo
+            // Inyectamos el bloque duplicado para mantener el bucle infinito
             contenedorNav.innerHTML = `
                 <div class="animate-marquee flex items-center space-x-14 px-6">
                     ${htmlTodos}${itemsHTML}${itemsHTML}
@@ -232,7 +242,7 @@
             `;
         }
 
-        // Selecciona la marca exacta sin errores de coincidencia
+        // Selecciona la marca de manera robusta
         function seleccionarMarca(marca) {
             marcaActual = String(marca).trim().toUpperCase();
             document.getElementById('input-busqueda').value = ''; 
@@ -282,7 +292,7 @@
             document.getElementById('filtro-activo-info').classList.add('hidden');
         }
 
-        // Renderiza las tarjetas de productos de forma segura usando índices numéricos
+        // Renderiza las tarjetas de productos
         function renderizarProductos(productos) {
             const grid = document.getElementById('productos-grid');
             
@@ -291,7 +301,6 @@
                 return;
             }
 
-            // Usamos el índice (index) para evitar que caracteres especiales o comillas rompan el HTML en móviles
             grid.innerHTML = productos.map((p, index) => {
                 let esAgotado = p.estado && p.estado.toLowerCase() === 'agotado';
                 return `
@@ -313,7 +322,7 @@
             }).join('');
         }
 
-        // Abre el modal de detalles de manera 100% segura mediante el índice de la lista actual
+        // Abre el modal de detalles de manera segura
         function abrirModalPorIndex(index) {
             let p = productosFiltradosActuales[index];
             if (!p) return;
