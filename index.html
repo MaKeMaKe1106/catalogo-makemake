@@ -1,1 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Make - Catálogo Online</title>
+    <!-- Tailwind CSS para el diseño visual -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* [ESTILOS]: Animación y configuración del carrusel infinito de marcas */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: max-content;
+            animation: scroll 30s linear infinite;
+        }
+        /* El carrusel nunca se detiene al interactuar */
+        .animate-marquee:active, .animate-marquee:focus {
+            animation-play-state: running !important;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
 
+    <!-- [CABECERA]: Contiene el logo principal de la tienda y la barra de búsqueda en tiempo real -->
+    <header style="background: linear-gradient(135deg, #F5F2EB 0%, #E6E0D3 100%);" class="shadow-sm py-4 px-6 border-b border-gray-200">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10">
+            
+            <!-- Logo principal de la tienda -->
+            <div class="flex flex-col items-center justify-center flex-shrink-0">
+                <img src="https://lh3.googleusercontent.com/d/1YcfdcfiTwNAu45D-JX5plXMJ6oKOVOvy" alt="Make Make Logo" class="h-20 md:h-24 object-contain">
+            </div>
+
+            <!-- Barra de búsqueda interactiva de productos -->
+            <div class="w-full max-w-md">
+                <div class="flex items-center bg-white rounded-full shadow-sm border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-pink-400 transition">
+                    <span class="pl-4 pr-2 text-gray-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </span>
+                    <input type="text" id="input-busqueda" placeholder="Buscar por nombre o marca..." class="w-full py-2.5 px-2 text-sm text-gray-700 bg-transparent focus:outline-none">
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- [CARRUSEL DE MARCAS]: Franja blanca con logos en movimiento infinito -->
+    <nav class="bg-white border-b border-gray-200 shadow-sm overflow-hidden py-6 relative">
+        <div id="carrusel-marcas" class="animate-marquee flex items-center space-x-14 px-6">
+            <!-- Las marcas y sus logos se cargan dinámicamente aquí mediante JavaScript -->
+        </div>
+    </nav>
+
+    <!-- [CUERPO PRINCIPAL]: Sección donde se muestran los productos en cuadrícula -->
+    <main class="max-w-6xl mx-auto p-4 md:p-6">
+        <!-- Aviso y botón para limpiar filtros de búsqueda o marca activa -->
+        <div id="filtro-activo-info" class="mb-6 flex justify-between items-center hidden">
+            <p id="texto-filtro" class="text-sm font-semibold text-gray-600">Mostrando resultados.</p>
+            <button onclick="reiniciarFiltros()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-xs font-bold transition">Ver todo el catálogo</button>
+        </div>
+
+        <!-- Cuadrícula dinámica con Skeletons (Tarjetas fantasma de carga instantánea) -->
+        <div id="productos-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Skeleton 1 -->
+            <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm animate-pulse h-72">
+                <div class="bg-gray-200 h-40 rounded-lg mb-4"></div>
+                <div class="bg-gray-200 h-3 w-1/3 rounded mb-2"></div>
+                <div class="bg-gray-200 h-4 w-3/4 rounded mb-4"></div>
+                <div class="bg-gray-200 h-8 rounded"></div>
+            </div>
+            <!-- Skeleton 2 -->
+            <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm animate-pulse h-72 hidden sm:block">
+                <div class="bg-gray-200 h-40 rounded-lg mb-4"></div>
+                <div class="bg-gray-200 h-3 w-1/3 rounded mb-2"></div>
+                <div class="bg-gray-200 h-4 w-3/4 rounded mb-4"></div>
+                <div class="bg-gray-200 h-8 rounded"></div>
+            </div>
+            <!-- Skeleton 3 -->
+            <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm animate-pulse h-72 hidden md:block">
+                <div class="bg-gray-200 h-40 rounded-lg mb-4"></div>
+                <div class="bg-gray-200 h-3 w-1/3 rounded mb-2"></div>
+                <div class="bg-gray-200 h-4 w-3/4 rounded mb-4"></div>
+                <div class="bg-gray-200 h-8 rounded"></div>
+            </div>
+            <!-- Skeleton 4 -->
+            <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm animate-pulse h-72 hidden lg:block">
+                <div class="bg-gray-200 h-40 rounded-lg mb-4"></div>
+                <div class="bg-gray-200 h-3 w-1/3 rounded mb-2"></div>
+                <div class="bg-gray-200 h-4 w-3/4 rounded mb-4"></div>
+                <div class="bg-gray-200 h-8 rounded"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- [MODAL DE DETALLE]: Ventana emergente adaptada para no desbordarse de la pantalla -->
+    <div id="modal" onclick="cerrarModalAfuera(event)" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50 overflow-y-auto">
+        <div class="bg-white rounded-xl max-w-2xl w-full p-6 relative shadow-2xl max-h-[90vh] flex flex-col my-auto">
+            <!-- Botón X fijo en la esquina superior derecha de la tarjeta -->
+            <button onclick="cerrarModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-700 font-bold text-2xl z-10 bg-white/80 px-2 rounded-full">&times;</button>
+            
+            <!-- Contenido scrolleable interior para que nunca desaparezcan la X ni el estado -->
+            <div class="overflow-y-auto pr-2 no-scrollbar">
+                <img id="modal-img" src="" alt="" class="w-full h-56 md:h-64 object-contain mb-4 rounded bg-gray-50 p-2">
+                <h2 id="modal-titulo" class="text-xl font-bold mb-2 text-gray-900"></h2>
+                <p id="modal-marca" class="text-xs uppercase bg-pink-100 text-pink-800 px-2.5 py-1 rounded-full inline-block mb-3 font-semibold"></p>
+                <p id="modal-precio" class="text-xl font-extrabold mb-4" style="color: #4a88e5;"></p>
+                <p id="modal-desc" class="text-sm text-gray-600 mb-4 leading-relaxed whitespace-pre-line"></p>
+            </div>
+
+            <!-- Botón de estado fijo al pie del modal -->
+            <div id="modal-estado" class="text-center font-bold py-2.5 rounded-lg text-sm tracking-wide mt-2 flex-shrink-0"></div>
+        </div>
+    </div>
+
+    <!-- [SCRIPTS DE JAVASCRIPT]: Lógica de conexión, filtrado y renderizado dinámico -->
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxEJESltpmcuA53ow2D3ZcnLGMceypGhPjJMneOtgjOtaGd4fc94LJJXMmAgo_qvtUStg/exec';
+        let todosLosProductos = [];
+        let marcaActual = 'TODAS';
+        let carruselCreado = false;
+
+        // [1] Función para descargar los datos desde Google Sheets al iniciar la página
+        async function cargarDatos() {
+            try {
+                let respuesta = await fetch(API_URL);
+                todosLosProductos = await respuesta.json();
+                
+                if (!carruselCreado) {
+                    renderizarCarruselMarcas(todosLosProductos);
+                    carruselCreado = true;
+                }
+                
+                renderizarProductos(todosLosProductos);
+            } catch (error) {
+                console.error("Error al cargar los datos:", error);
+                document.getElementById('productos-grid').innerHTML = `<div class="col-span-full text-center py-12 text-red-500 font-medium">Error al cargar los productos. Intenta recargar la página.</div>`;
+            }
+        }
+
+        // [2] Escuchador de eventos para activar la barra de búsqueda en tiempo real
+        document.addEventListener("DOMContentLoaded", () => {
+            const inputBusqueda = document.getElementById("input-busqueda");
+            if (inputBusqueda) {
+                inputBusqueda.addEventListener("input", () => {
+                    aplicarFiltros();
+                });
+            }
+        });
+
+        // [3] Función para construir y mostrar el carrusel de marcas con controles manuales independientes
+        function renderizarCarruselMarcas(productos) {
+            const container = document.getElementById('carrusel-marcas');
+            
+            let marcasMap = {};
+            productos.forEach(p => {
+                if (p.marca && !marcasMap[p.marca]) {
+                    marcasMap[p.marca] = p.logo_marca || '';
+                }
+            });
+
+            let marcasArray = Object.keys(marcasMap);
+
+            // Botón inicial "TODAS"
+            let htmlContenido = `<div onclick="seleccionarMarca('TODAS')" class="cursor-pointer flex-shrink-0 px-5 py-2.5 bg-pink-50 hover:bg-pink-100 rounded-lg text-pink-900 font-bold text-xs uppercase tracking-wider transition">TODAS</div>`;
+
+            let itemsHTML = marcasArray.map(marca => {
+                let logoUrl = marcasMap[marca];
+                let marcaLower = marca.toLowerCase();
+
+                // =========================================================================
+                // 🛠️ PANEL DE CONFIGURACIÓN MANUAL (Modifica los scale a tu gusto)
+                // =========================================================================
+                let alturaContenedor = "h-16"; 
+                let espacioHorizontal = "px-6"; 
+                let escalaZoom = "transform: scale(1.4);"; // Tamaño predeterminado general
+
+                if (marcaLower.includes('round lab') || marcaLower.includes('centellian')) {
+                    escalaZoom = "transform: scale(2.2);"; 
+                } 
+                else if (marcaLower.includes('skin1004')) {
+                    escalaZoom = "transform: scale(2.4);"; 
+                }
+                else if (marcaLower.includes('dr. althea') || marcaLower.includes('dr althea')) {
+                    escalaZoom = "transform: scale(1.4);";
+                } 
+                else if (marcaLower.includes('medicube') || marcaLower.includes('mixsoon')) {
+                    escalaZoom = "transform: scale(1.6);"; 
+                }
+                else if (marcaLower.includes('job') || marcaLower.includes('k-secret')) {
+                    escalaZoom = "transform: scale(1.2);"; 
+                }
+                else if (marcaLower.includes('anua') || marcaLower.includes('arencia') || marcaLower.includes('beauty creations')) {
+                    escalaZoom = "transform: scale(1.2);"; 
+                }
+                // =========================================================================
+
+                if (!logoUrl) {
+                    return `<div onclick="seleccionarMarca('${marca}')" class="cursor-pointer flex-shrink-0 text-gray-700 font-bold text-sm tracking-wider uppercase hover:text-pink-600 transition">${marca}</div>`;
+                } else {
+                    return `<div onclick="seleccionarMarca('${marca}')" class="cursor-pointer flex-shrink-0 ${alturaContenedor} flex items-center justify-center ${espacioHorizontal} transition transform hover:scale-105">
+                                <img src="${logoUrl}" alt="${marca}" style="${escalaZoom}" class="h-16 md:h-20 max-w-[220px] object-contain transition duration-300 pointer-events-none">
+                            </div>`;
+                }
+            }).join('');
+
+            // Se duplica el contenido para lograr el efecto de movimiento infinito fluido sin congelarse
+            container.innerHTML = htmlContenido + itemsHTML + itemsHTML;
+        }
+
+        // [4] Función para manejar la selección de una marca específica desde el carrusel
+        function seleccionarMarca(marca) {
+            marcaActual = marca;
+            document.getElementById('input-busqueda').value = ''; 
+            aplicarFiltros();
+        }
+
+        // [5] Lógica de filtrado combinado
+        function aplicarFiltros() {
+            let textoBusqueda = document.getElementById('input-busqueda').value.toLowerCase().trim();
+            let filtrados = todosLosProductos;
+
+            if (marcaActual !== 'TODAS') {
+                filtrados = filtrados.filter(p => p.marca === marcaActual);
+            }
+
+            if (textoBusqueda !== '') {
+                const normalizar = (str) => (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                let busquedaLimpia = normalizar(textoBusqueda);
+
+                filtrados = filtrados.filter(p => {
+                    let nombre = normalizar(p.nombre);
+                    let marca = normalizar(p.marca);
+                    let desc = normalizar(p.descripcion);
+                    return nombre.includes(busquedaLimpia) || marca.includes(busquedaLimpia) || desc.includes(busquedaLimpia);
+                });
+            }
+
+            renderizarProductos(filtrados);
+
+            const infoFiltro = document.getElementById('filtro-activo-info');
+            const textoFiltro = document.getElementById('texto-filtro');
+            if (marcaActual !== 'TODAS' || textoBusqueda !== '') {
+                textoFiltro.innerText = `Resultados filtrados (${filtrados.length} productos encontrados)`;
+                infoFiltro.classList.remove('hidden');
+            } else {
+                infoFiltro.classList.add('hidden');
+            }
+        }
+
+        // [6] Reinicia todos los filtros
+        function reiniciarFiltros() {
+            marcaActual = 'TODAS';
+            document.getElementById('input-busqueda').value = '';
+            renderizarProductos(todosLosProductos);
+            document.getElementById('filtro-activo-info').classList.add('hidden');
+        }
+
+        // [7] Dibuja y actualiza las tarjetas de productos en la pantalla principal
+        function renderizarProductos(productos) {
+            const grid = document.getElementById('productos-grid');
+            
+            if (productos.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-500 font-medium">No se encontraron productos con esos criterios.</div>`;
+                return;
+            }
+
+            grid.innerHTML = productos.map(p => {
+                let esAgotado = p.estado && p.estado.toLowerCase() === 'agotado';
+                return `
+                    <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col justify-between relative hover:shadow-md transition">
+                        ${esAgotado ? '<span class="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow">AGOTADO</span>' : ''}
+                        <div class="p-4 flex justify-center bg-gray-50 h-48">
+                            <img src="${p.imagen}" alt="${p.nombre}" class="h-full object-contain" loading="lazy">
+                        </div>
+                        <div class="p-4 flex flex-col flex-grow">
+                            <span class="text-[10px] uppercase font-bold text-pink-700 mb-1">${p.marca}</span>
+                            <h3 class="font-semibold text-sm mb-2 text-gray-800 line-clamp-2">${p.nombre}</h3>
+                            <p class="text-base font-bold text-gray-900 mt-auto mb-3">S/. ${p.precio}</p>
+                            <button onclick='abrirModal(${JSON.stringify(p)})' class="w-full py-2 bg-pink-50 text-pink-900 rounded-lg text-xs font-bold hover:bg-pink-600 hover:text-white transition">
+                                Ver detalle
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // [8] Abre el modal flotante con los detalles completos del producto seleccionado
+        function abrirModal(p) {
+            document.getElementById('modal-img').src = p.imagen;
+            document.getElementById('modal-titulo').innerText = p.nombre;
+            document.getElementById('modal-marca').innerText = p.marca;
+            document.getElementById('modal-precio').innerText = 'S/. ' + p.precio;
+            document.getElementById('modal-desc').innerText = p.descripcion;
+            
+            let estadoDiv = document.getElementById('modal-estado');
+            let esAgotado = p.estado && p.estado.toLowerCase() === 'agotado';
+            if(esAgotado) {
+                estadoDiv.innerText = "PRODUCTO AGOTADO";
+                estadoDiv.className = "text-center font-bold py-2.5 rounded-lg text-sm bg-red-100 text-red-700 tracking-wide mt-2 flex-shrink-0";
+            } else {
+                estadoDiv.innerText = "DISPONIBLE";
+                estadoDiv.className = "text-center font-bold py-2.5 rounded-lg text-sm bg-emerald-100 text-emerald-700 tracking-wide mt-2 flex-shrink-0";
+            }
+
+            document.getElementById('modal').classList.remove('hidden');
+            document.getElementById('modal').classList.add('flex');
+        }
+
+        // [9] Cierra el modal de detalles
+        function cerrarModal() {
+            document.getElementById('modal').classList.remove('flex');
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        // [10] Cierra el modal si se hace clic fuera
+        function cerrarModalAfuera(event) {
+            const modalDiv = document.getElementById('modal');
+            if (event.target === modalDiv) {
+                cerrarModal();
+            }
+        }
+
+        // Ejecuta la carga inicial de datos al abrir la página
+        cargarDatos();
+    </script>
+</body>
+</html>
