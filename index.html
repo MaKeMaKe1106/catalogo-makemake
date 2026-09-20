@@ -7,15 +7,18 @@
     <!-- Tailwind CSS para el diseño visual -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* [ESTILOS]: Animación y configuración del carrusel infinito de marcas */
+        /* [ESTILOS]: Animación y configuración del carrusel infinito con aceleración para móviles */
         @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-50%, 0, 0); }
         }
         .animate-marquee {
             display: flex;
             width: max-content;
             animation: scroll 30s linear infinite;
+            will-change: transform;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
         /* El carrusel nunca se detiene al interactuar */
         .animate-marquee:active, .animate-marquee:focus {
@@ -33,8 +36,8 @@
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
     <!-- [CABECERA]: Contiene el logo principal de la tienda y la barra de búsqueda en tiempo real -->
-    <header style="background: linear-gradient(135deg, #F5F2EB 0%, #E6E0D3 100%);" class="shadow-sm py-4 px-6 border-b border-gray-200">
-        <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10">
+    <header style="background: linear-gradient(135deg, #F5F2EB 0%, #E6E0D3 100%);" class="shadow-sm py-5 px-4 sm:px-6 border-b border-gray-200">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center gap-4 md:gap-10">
             
             <!-- Logo principal de la tienda -->
             <div class="flex flex-col items-center justify-center flex-shrink-0">
@@ -55,31 +58,31 @@
     </header>
 
     <!-- [CARRUSEL DE MARCAS]: Franja blanca con logos en movimiento infinito (Solo marcas con logo_marca válido) -->
-    <nav class="bg-white border-b border-gray-200 shadow-sm overflow-hidden py-6 relative">
-        <div id="carrusel-marcas" class="animate-marquee flex items-center space-x-14 px-6">
+    <nav class="bg-white border-b border-gray-200 shadow-sm overflow-hidden py-5 relative">
+        <div id="carrusel-marcas" class="animate-marquee flex items-center space-x-10 sm:space-x-14 px-4 sm:px-6">
             <!-- Las marcas con logo se cargan dinámicamente aquí -->
         </div>
     </nav>
 
     <!-- [BLOQUES DE MARCAS / CATEGORÍAS]: Cuadrícula interactiva con todas las marcas del Sheet -->
-    <section class="py-5 px-4">
+    <section class="py-4 px-3 sm:px-4">
         <div class="max-w-[1400px] mx-auto">
-            <div id="grid-bloques-marcas" class="flex flex-wrap justify-center gap-2.5">
+            <div id="grid-bloques-marcas" class="flex flex-wrap justify-center gap-2 sm:gap-2.5">
                 <!-- Se generan dinámicamente desde JavaScript -->
             </div>
         </div>
     </section>
 
-    <!-- [CUERPO PRINCIPAL]: Sección donde se muestran los productos en cuadrícula de 4 columnas amplias -->
-    <main class="max-w-[1400px] mx-auto p-4 md:p-6">
+    <!-- [CUERPO PRINCIPAL]: Cuadrícula de productos adaptada (1 col en móvil, 4 col amplias en PC) -->
+    <main class="max-w-[1400px] mx-auto p-3 sm:p-4 md:p-6">
         <!-- Aviso y botón para limpiar filtros de búsqueda o marca activa -->
-        <div id="filtro-activo-info" class="mb-6 flex justify-between items-center hidden">
-            <p id="texto-filtro" class="text-sm font-semibold text-gray-600">Mostrando resultados.</p>
+        <div id="filtro-activo-info" class="mb-4 sm:mb-6 flex justify-between items-center hidden">
+            <p id="texto-filtro" class="text-xs sm:text-sm font-semibold text-gray-600">Mostrando resultados.</p>
             <button onclick="reiniciarFiltros()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-xs font-bold transition">Ver todo el catálogo</button>
         </div>
 
-        <!-- Cuadrícula dinámica: 4 columnas en pantallas grandes con diseño espacioso -->
-        <div id="productos-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <!-- Cuadrícula dinámica: 1 col en móviles, 2 en tablets, 4 en PC con diseño espacioso -->
+        <div id="productos-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             <!-- Skeleton 1 -->
             <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm animate-pulse h-80">
                 <div class="bg-gray-200 h-48 rounded-lg mb-4"></div>
@@ -111,13 +114,13 @@
         </div>
     </main>
 
-    <!-- [MODAL DE DETALLE]: Ventana emergente adaptada para no desbordarse de la pantalla -->
+    <!-- [MODAL DE DETALLE]: Ventana emergente adaptada para móviles y PC -->
     <div id="modal" onclick="cerrarModalAfuera(event)" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50 overflow-y-auto">
-        <div class="bg-white rounded-xl max-w-2xl w-full p-6 relative shadow-2xl max-h-[90vh] flex flex-col my-auto">
+        <div class="bg-white rounded-xl max-w-2xl w-full p-5 sm:p-6 relative shadow-2xl max-h-[90vh] flex flex-col my-auto">
             <!-- Botón X fijo en la esquina superior derecha de la tarjeta -->
             <button onclick="cerrarModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-700 font-bold text-2xl z-10 bg-white/80 px-2 rounded-full">&times;</button>
             
-            <!-- Contenido scrolleable interior para que nunca desaparezcan la X ni el estado -->
+            <!-- Contenido scrolleable interior -->
             <div class="overflow-y-auto pr-2 no-scrollbar">
                 <img id="modal-img" src="" alt="" class="w-full h-56 md:h-64 object-contain mb-4 rounded bg-gray-50 p-2">
                 <h2 id="modal-titulo" class="text-xl font-bold mb-2 text-gray-900"></h2>
@@ -182,37 +185,37 @@
 
             let marcasArray = Object.keys(marcasMap);
 
-            let htmlContenido = `<div onclick="seleccionarMarca('TODAS')" class="cursor-pointer flex-shrink-0 px-5 py-2.5 bg-pink-50 hover:bg-pink-100 rounded-lg text-pink-900 font-bold text-xs uppercase tracking-wider transition">TODAS</div>`;
+            let htmlContenido = `<div onclick="seleccionarMarca('TODAS')" class="cursor-pointer flex-shrink-0 px-4 py-2 bg-pink-50 hover:bg-pink-100 rounded-lg text-pink-900 font-bold text-xs uppercase tracking-wider transition">TODAS</div>`;
 
             let itemsHTML = marcasArray.map(marca => {
                 let logoUrl = marcasMap[marca];
                 let marcaLower = marca.toLowerCase();
 
-                let alturaContenedor = "h-16"; 
-                let espacioHorizontal = "px-6"; 
-                let escalaZoom = "transform: scale(1.4);";
+                let alturaContenedor = "h-14 sm:h-16"; 
+                let espacioHorizontal = "px-4 sm:px-6"; 
+                let escalaZoom = "transform: scale(1.3);";
 
                 if (marcaLower.includes('round lab') || marcaLower.includes('centellian')) {
-                    escalaZoom = "transform: scale(2.2);"; 
+                    escalaZoom = "transform: scale(2.0);"; 
                 } 
                 else if (marcaLower.includes('skin1004')) {
-                    escalaZoom = "transform: scale(2.4);"; 
+                    escalaZoom = "transform: scale(2.2);"; 
                 }
                 else if (marcaLower.includes('dr. althea') || marcaLower.includes('dr althea')) {
-                    escalaZoom = "transform: scale(1.4);";
+                    escalaZoom = "transform: scale(1.3);";
                 } 
                 else if (marcaLower.includes('medicube') || marcaLower.includes('mixsoon')) {
-                    escalaZoom = "transform: scale(1.6);"; 
+                    escalaZoom = "transform: scale(1.5);"; 
                 }
                 else if (marcaLower.includes('job') || marcaLower.includes('k-secret')) {
-                    escalaZoom = "transform: scale(1.2);"; 
+                    escalaZoom = "transform: scale(1.1);"; 
                 }
                 else if (marcaLower.includes('anua') || marcaLower.includes('arencia') || marcaLower.includes('beauty creations')) {
-                    escalaZoom = "transform: scale(1.2);"; 
+                    escalaZoom = "transform: scale(1.1);"; 
                 }
 
                 return `<div onclick="seleccionarMarca('${marca}')" class="cursor-pointer flex-shrink-0 ${alturaContenedor} flex items-center justify-center ${espacioHorizontal} transition transform hover:scale-105">
-                            <img src="${logoUrl}" alt="${marca}" style="${escalaZoom}" class="h-16 md:h-20 max-w-[220px] object-contain transition duration-300 pointer-events-none">
+                            <img src="${logoUrl}" alt="${marca}" style="${escalaZoom}" class="h-14 sm:h-16 md:h-20 max-w-[180px] sm:max-w-[220px] object-contain transition duration-300 pointer-events-none">
                         </div>`;
             }).join('');
 
@@ -230,14 +233,14 @@
             let marcasArray = Array.from(marcasSet).sort();
 
             let html = `
-                <div onclick="seleccionarMarca('TODAS')" data-marca="TODAS" class="bloque-marca cursor-pointer bg-white border-2 border-pink-500 shadow-sm rounded-xl px-4 py-2.5 min-w-[110px] h-14 flex items-center justify-center transition hover:shadow-md hover:border-pink-600">
-                    <span class="text-xs font-bold text-gray-800 text-center uppercase tracking-wider">Todas</span>
+                <div onclick="seleccionarMarca('TODAS')" data-marca="TODAS" class="bloque-marca cursor-pointer bg-white border-2 border-pink-500 shadow-sm rounded-xl px-3 sm:px-4 py-2 min-w-[95px] sm:min-w-[110px] h-12 sm:h-14 flex items-center justify-center transition hover:shadow-md hover:border-pink-600">
+                    <span class="text-[11px] sm:text-xs font-bold text-gray-800 text-center uppercase tracking-wider">Todas</span>
                 </div>
             `;
 
             html += marcasArray.map(marca => `
-                <div onclick="seleccionarMarca('${marca}')" data-marca="${marca}" class="bloque-marca cursor-pointer bg-white border border-pink-300 shadow-sm rounded-xl px-4 py-2.5 min-w-[120px] h-14 flex items-center justify-center transition hover:shadow-md hover:border-pink-500">
-                    <span class="text-[11px] font-semibold text-gray-700 text-center uppercase line-clamp-1 leading-tight">${marca}</span>
+                <div onclick="seleccionarMarca('${marca}')" data-marca="${marca}" class="bloque-marca cursor-pointer bg-white border border-pink-300 shadow-sm rounded-xl px-3 sm:px-4 py-2 min-w-[105px] sm:min-w-[120px] h-12 sm:h-14 flex items-center justify-center transition hover:shadow-md hover:border-pink-500">
+                    <span class="text-[10px] sm:text-[11px] font-semibold text-gray-700 text-center uppercase line-clamp-1 leading-tight">${marca}</span>
                 </div>
             `).join('');
 
@@ -250,9 +253,9 @@
             bloques.forEach(bloque => {
                 let m = bloque.getAttribute('data-marca');
                 if (m.toLowerCase() === marcaActual.toLowerCase()) {
-                    bloque.className = "bloque-marca cursor-pointer bg-pink-50 border-2 border-pink-500 shadow-sm rounded-xl px-4 py-2.5 min-w-[120px] h-14 flex items-center justify-center transition transform scale-105";
+                    bloque.className = "bloque-marca cursor-pointer bg-pink-50 border-2 border-pink-500 shadow-sm rounded-xl px-3 sm:px-4 py-2 min-w-[105px] sm:min-w-[120px] h-12 sm:h-14 flex items-center justify-center transition transform scale-105";
                 } else {
-                    bloque.className = "bloque-marca cursor-pointer bg-white border border-pink-300 shadow-sm rounded-xl px-4 py-2.5 min-w-[120px] h-14 flex items-center justify-center transition hover:shadow-md hover:border-pink-500";
+                    bloque.className = "bloque-marca cursor-pointer bg-white border border-pink-300 shadow-sm rounded-xl px-3 sm:px-4 py-2 min-w-[105px] sm:min-w-[120px] h-12 sm:h-14 flex items-center justify-center transition hover:shadow-md hover:border-pink-500";
                 }
             });
         }
